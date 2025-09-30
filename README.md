@@ -29,7 +29,7 @@ npm install html5-plus-modules
 
 ```javascript
 // 导入整个模块集合
-import * as html5plus from 'html5-plus-modules';
+import * as goodgsf from 'html5-plus-modules';
 
 // 或者按需导入
 import { storage, device, camera } from 'html5-plus-modules';
@@ -170,7 +170,7 @@ try {
 ### 克隆项目
 
 ```bash
-git clone https://github.com/html5plus/html5-plus-modules.git
+git clone https://github.com/goodgsf/html5-plus-modules.git
 cd html5-plus-modules
 npm install
 ```
@@ -199,16 +199,6 @@ node scripts/build.js --prod --minify
 
 # 清理构建
 node scripts/build.js --clean
-```
-
-### 代码格式化
-
-```bash
-# 格式化代码
-npm run format
-
-# 检查代码风格
-npm run lint
 ```
 
 ## 项目结构
@@ -272,7 +262,7 @@ html5-plus-modules/
 如果您在使用过程中遇到问题，请：
 
 1. 查看 [docs/](docs/) 中的文档
-2. 搜索现有的 [Issues](https://github.com/html5plus/html5-plus-modules/issues)
+2. 搜索现有的 [Issues](https://github.com/goodgsf/html5-plus-modules/issues)
 3. 创建新的 Issue 描述问题
 
 ## 鸣谢

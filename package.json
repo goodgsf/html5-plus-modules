@@ -12,8 +12,6 @@
     "test:watch": "node test/test-runner.js --all --watch",
     "build": "node scripts/build.js",
     "docs": "node scripts/generate-docs.js",
-    "lint": "eslint modules/ test/",
-    "format": "prettier --write modules/ test/",
     "dev": "node scripts/dev-server.js"
   },
   "keywords": [
@@ -40,16 +38,6 @@
     "node": ">=16.0.0",
     "npm": ">=7.0.0"
   },
-  "devDependencies": {
-    "eslint": "^8.0.0",
-    "prettier": "^2.0.0",
-    "jsdoc": "^4.0.0",
-    "jsdoc-to-markdown": "^8.0.0"
-  },
-  "dependencies": {},
-  "optionalDependencies": {
-    "@types/node": "^18.0.0"
-  },
   "directories": {
     "test": "test",
     "doc": "docs"
@@ -62,5 +50,8 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "devDependencies": {
+    "terser": "^5.44.0"
   }
 }

@@ -475,21 +475,20 @@ class BarcodeModule {
      * ```
      */
     getTypeName(type) {
-        const typeNames = {
-            [BarcodeType.QR]: 'QR二维码',
-            [BarcodeType.EAN13]: 'EAN条形码标准版',
-            [BarcodeType.EAN8]: 'ENA条形码简版',
-            [BarcodeType.AZTEC]: 'Aztec二维码',
-            [BarcodeType.DATAMATRIX]: 'Data Matrix二维码',
-            [BarcodeType.UPCA]: 'UPC条形码标准版',
-            [BarcodeType.UPCE]: 'UPC条形码缩短版',
-            [BarcodeType.CODABAR]: 'Codabar条形码',
-            [BarcodeType.CODE39]: 'Code39条形码',
-            [BarcodeType.CODE93]: 'Code93条形码',
-            [BarcodeType.CODE128]: 'Code128条形码',
-            [BarcodeType.ITF]: 'ITF条形码',
-            [BarcodeType.PDF417]: 'PDF 417二维条码'
-        };
+        const typeNames = {};
+        typeNames[BarcodeType.QR] = 'QR二维码';
+        typeNames[BarcodeType.EAN13] = 'EAN条形码标准版';
+        typeNames[BarcodeType.EAN8] = 'ENA条形码简版';
+        typeNames[BarcodeType.AZTEC] = 'Aztec二维码';
+        typeNames[BarcodeType.DATAMATRIX] = 'Data Matrix二维码';
+        typeNames[BarcodeType.UPCA] = 'UPC条形码标准版';
+        typeNames[BarcodeType.UPCE] = 'UPC条形码缩短版';
+        typeNames[BarcodeType.CODABAR] = 'Codabar条形码';
+        typeNames[BarcodeType.CODE39] = 'Code39条形码';
+        typeNames[BarcodeType.CODE93] = 'Code93条形码';
+        typeNames[BarcodeType.CODE128] = 'Code128条形码';
+        typeNames[BarcodeType.ITF] = 'ITF条形码';
+        typeNames[BarcodeType.PDF417] = 'PDF 417二维条码';
 
         return typeNames[type] || '未知类型';
     }

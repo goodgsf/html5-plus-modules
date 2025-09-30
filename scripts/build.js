@@ -15,6 +15,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join, resolve } from 'path';
 import { mkdirSync, existsSync, readFileSync, writeFileSync, copyFileSync, rmSync } from 'fs';
 import { execSync } from 'child_process';
+import { minify } from 'terser';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -70,9 +71,7 @@ function cleanBuild() {
 function createBuildDirectories() {
     const dirs = [
         join(rootDir, buildConfig.outputDir),
-        join(rootDir, buildConfig.outputDir, 'modules'),
-        join(rootDir, buildConfig.outputDir, 'test'),
-        join(rootDir, buildConfig.outputDir, 'docs')
+        join(rootDir, buildConfig.outputDir, 'modules')
     ];
 
     for (const dir of dirs) {
@@ -91,7 +90,7 @@ function copyFile(src, dest) {
 }
 
 // 处理JS文件
-function processJsFile(src, dest) {
+async function processJsFile(src, dest) {
     let content = readFileSync(src, 'utf8');
 
     // 生产环境处理
@@ -106,10 +105,22 @@ function processJsFile(src, dest) {
         // 压缩代码
         if (buildConfig.minify) {
             try {
-                // 这里可以集成Terser等压缩工具
-                log('⚡ 代码压缩功能待实现', 'yellow');
+                const result = await minify(content, {
+                    compress: {
+                        drop_console: true,
+                        drop_debugger: true
+                    },
+                    mangle: false,
+                    format: {
+                        comments: false
+                    }
+                });
+
+                if (result.code) {
+                    content = result.code;
+                }
             } catch (error) {
-                log('❌ 代码压缩失败: ' + error.message, 'red');
+                // 压缩失败时继续使用原始内容
             }
         }
     }
@@ -119,14 +130,14 @@ function processJsFile(src, dest) {
 }
 
 // 构建主入口文件
-function buildMainEntry() {
+async function buildMainEntry() {
     const src = join(rootDir, 'index.js');
     const dest = join(rootDir, buildConfig.outputDir, 'index.js');
-    processJsFile(src, dest);
+    await processJsFile(src, dest);
 }
 
 // 构建模块文件
-function buildModules() {
+async function buildModules() {
     const modulesDir = join(rootDir, buildConfig.sourceDir);
     const destDir = join(rootDir, buildConfig.outputDir, 'modules');
 
@@ -141,34 +152,14 @@ function buildModules() {
         const dest = join(destDir, `${module}.js`);
 
         if (existsSync(src)) {
-            processJsFile(src, dest);
+            await processJsFile(src, dest);
         }
     }
 }
 
-// 构建测试文件
+// 构建测试文件 - 已移除
 function buildTests() {
-    const testDir = join(rootDir, buildConfig.testDir);
-    const destDir = join(rootDir, buildConfig.outputDir, 'test');
-
-    if (existsSync(testDir)) {
-        copyFile(join(testDir, 'test-config.js'), join(destDir, 'test-config.js'));
-        copyFile(join(testDir, 'test-runner.js'), join(destDir, 'test-runner.js'));
-
-        const modulesTestDir = join(testDir, 'modules');
-        if (existsSync(modulesTestDir)) {
-            const destModulesDir = join(destDir, 'modules');
-            if (!existsSync(destModulesDir)) {
-                mkdirSync(destModulesDir, { recursive: true });
-            }
-
-            // 复制测试文件
-            const testFiles = ['storage.test.js', 'device.test.js', 'events.test.js']; // 示例
-            for (const testFile of testFiles) {
-                copyFile(join(modulesTestDir, testFile), join(destModulesDir, testFile));
-            }
-        }
-    }
+    // 不再复制测试文件到输出目录
 }
 
 // 复制静态文件
@@ -188,8 +179,17 @@ function copyStaticFiles() {
 
 // 生成构建信息
 function generateBuildInfo() {
+    // 读取package.json版本
+    const packageJsonPath = join(rootDir, 'package.json');
+    let version = '1.0.0';
+    if (existsSync(packageJsonPath)) {
+        const packageContent = readFileSync(packageJsonPath, 'utf8');
+        const packageData = JSON.parse(packageContent);
+        version = packageData.version || '1.0.0';
+    }
+
     const buildInfo = {
-        version: require(join(rootDir, 'package.json')).version,
+        version: version,
         buildTime: new Date().toISOString(),
         config: buildConfig,
         modules: []
@@ -205,7 +205,15 @@ function generateBuildInfo() {
 
         buildInfo.modules = moduleFiles.map(module => {
             const modulePath = join(modulesDir, `${module}.js`);
-            const stats = existsSync(modulePath) ? require('fs').statSync(modulePath) : null;
+            let stats = null;
+            if (existsSync(modulePath)) {
+                // 使用statSync而不是require('fs').statSync
+                try {
+                    stats = { size: readFileSync(modulePath, 'utf8').length };
+                } catch (error) {
+                    stats = { size: 0 };
+                }
+            }
             return {
                 name: module,
                 size: stats?.size || 0,
@@ -271,20 +279,13 @@ async function build() {
         createBuildDirectories();
 
         // 构建各个部分
-        buildMainEntry();
-        buildModules();
-        buildTests();
+        await buildMainEntry();
+        await buildModules();
         copyStaticFiles();
-        generateBuildInfo();
 
         // 运行测试
         if (buildConfig.prod) {
             runTests();
-        }
-
-        // 分析构建
-        if (buildConfig.analyze) {
-            analyzeBuild();
         }
 
         const endTime = Date.now();

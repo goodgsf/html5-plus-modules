@@ -1,0 +1,66 @@
+{
+  "name": "html5-plus-modules",
+  "version": "1.0.0",
+  "description": "HTML5+ ES模块集合 - 完整的HTML5+ API封装",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "node test/test-runner.js --all",
+    "test:module": "node test/test-runner.js",
+    "test:storage": "node test/test-runner.js storage",
+    "test:report": "node test/test-runner.js --all --report=json",
+    "test:watch": "node test/test-runner.js --all --watch",
+    "build": "node scripts/build.js",
+    "docs": "node scripts/generate-docs.js",
+    "lint": "eslint modules/ test/",
+    "format": "prettier --write modules/ test/",
+    "dev": "node scripts/dev-server.js"
+  },
+  "keywords": [
+    "html5+",
+    "es6",
+    "modules",
+    "mobile",
+    "hybrid",
+    "app",
+    "api",
+    "plus"
+  ],
+  "author": "HTML5+ Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/html5plus/html5-plus-modules.git"
+  },
+  "bugs": {
+    "url": "https://github.com/html5plus/html5-plus-modules/issues"
+  },
+  "homepage": "https://github.com/html5plus/html5-plus-modules#readme",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^2.0.0",
+    "jsdoc": "^4.0.0",
+    "jsdoc-to-markdown": "^8.0.0"
+  },
+  "dependencies": {},
+  "optionalDependencies": {
+    "@types/node": "^18.0.0"
+  },
+  "directories": {
+    "test": "test",
+    "doc": "docs"
+  },
+  "files": [
+    "index.js",
+    "modules/",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
